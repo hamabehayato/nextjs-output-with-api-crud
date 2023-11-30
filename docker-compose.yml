@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   frontend:
-    container_name: nestjs_output_with_crud_frontend
+    container_name: nextjs_output_with_crud_frontend
     build: ./web-front
     tty: true
     ports:
@@ -16,7 +16,7 @@ services:
     command: sh -c 'npm install && npm run dev'
 
   backend:
-    container_name: nestjs_output_with_crud_backend
+    container_name: nextjs_output_with_crud_backend
     build: ./api-server
     tty: true
     depends_on:
@@ -33,7 +33,7 @@ services:
     command: sh -c 'npm install && npm run start'
 
   db:
-    container_name: nestjs_output_with_crud_db
+    container_name: nextjs_output_with_crud_db
     environment:
       - MYSQL_DATABASE=NEXTJS_OUTPUT_WITH_CRUD_DB
       - MYSQL_USER=user
@@ -44,12 +44,12 @@ services:
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
     # コンテナ停止時にもデータが消えないように設定
     volumes:
-      # nestjs_output_with_crud_db という名前のボリュームを作成し、
+      # nextjs_output_with_crud_db という名前のボリュームを作成し、
       # MySQLのデータが /var/lib/mysql ディレクトリに永続的に保存されるように設定
-      - nestjs_output_with_crud_data:/var/lib/mysql
+      - nextjs_output_with_crud_data:/var/lib/mysql
       - ./mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
     ports:
       - 3306:3306
 
 volumes:
-  nestjs_output_with_crud_data:
+  nextjs_output_with_crud_data:
