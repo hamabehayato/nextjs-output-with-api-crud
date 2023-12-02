@@ -8,7 +8,7 @@
 // https://zenn.dev/tsucchiiinoko/articles/8da862593a9980
 import { useState, useCallback, useEffect } from 'react';
 // import { useRouter } from 'next/router';
-import { fetchTodoListApi, fetchTodoApi, createTodoApi, updateTodoApi, deleteTodoApi } from '@/apis/todoApi';
+import { fetchTodoListApi, createTodoApi, updateTodoApi, deleteTodoApi } from '@/apis/todoApi';
 // import { NAVIGATION_LIST } from '@/constants/navigations';
 import { TodoType } from '@/interfaces/Todo';
 
@@ -39,8 +39,11 @@ export const useTodo = () => {
   const createTodo = useCallback(
     async (title: string, content: string) => {
       const createdTodo = await createTodoApi(title, content);
+
+      // データを再取得
+      const data = await fetchTodoListApi();
+      setOriginTodoList(typeof data === 'object' ? data : []);
       return createdTodo;
-      // router.push(NAVIGATION_LIST.TOP);
     },
     [originTodoList]
   );
@@ -54,7 +57,10 @@ export const useTodo = () => {
   const updateTodo = useCallback(
     async (id: number, title: string, content: string) => {
       const updatedTodo = await updateTodoApi(id, title, content);
-      // router.push(NAVIGATION_LIST.TOP);
+
+      // データを再取得
+      const data = await fetchTodoListApi();
+      setOriginTodoList(typeof data === 'object' ? data : []);
       return updatedTodo;
     },
     [originTodoList]
@@ -67,6 +73,10 @@ export const useTodo = () => {
   const deleteTodo = useCallback(
     async (id: number) => {
       const deletedTodo = await deleteTodoApi(id);
+
+      // データを再取得
+      const data = await fetchTodoListApi();
+      setOriginTodoList(typeof data === 'object' ? data : []);
       return deletedTodo;
     },
     [originTodoList]

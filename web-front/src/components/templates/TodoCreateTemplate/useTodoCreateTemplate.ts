@@ -4,6 +4,8 @@
  * @package hooks
  */
 import { useState, useCallback } from 'react';
+import { useRouter } from 'next/router';
+import { NAVIGATION_PATH } from '@/constants/navigations';
 import { EventType } from '@/interfaces/Event';
 
 type Params = {
@@ -33,6 +35,7 @@ export const useTodoCreateTemplate = ({ createTodo }: Params) => {
   /* local state */
   const [inputTitle, setInputTitle] = useState('');
   const [inputContent, setInputContent] = useState('');
+  const router = useRouter();
 
   /* actions */
   /**
@@ -61,6 +64,7 @@ export const useTodoCreateTemplate = ({ createTodo }: Params) => {
       e.preventDefault();
       if (inputTitle && inputContent) {
         createTodo(inputTitle, inputContent);
+        router.push(NAVIGATION_PATH.TOP);
       }
     },
     // これらが更新された時のみ、関数を再生成する

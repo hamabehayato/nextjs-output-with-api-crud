@@ -55,6 +55,7 @@ export const createTodoApi = async (title: string, content: string) => {
  */
 export const updateTodoApi = async (id: number, title: string, content: string) => {
   try {
+    console.log(id, title, content);
     await globalAxios.put(`/todo/${id}`, { title: title, content: content });
   } catch (err) {
     if (isAxiosError(err)) {
