@@ -1,5 +1,5 @@
 {
-  "name": "js-output-first",
+  "name": "nextjs-output-with-api-crud",
   "version": "1.0.0",
   "description": "Node.js アウトプット用リポジトリ",
   "main": "src/main.ts",
@@ -7,7 +7,7 @@
     "start": "node dist/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "migrate": "npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
+    "migrate": "npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts"
   },
   "author": "",
   "license": "ISC",
