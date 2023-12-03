@@ -1,4 +1,3 @@
-// ファイル生成コマンド npx typeorm migration:create type-orm/migration/Todo
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class SeedTodoTable1700794238772 implements MigrationInterface {
