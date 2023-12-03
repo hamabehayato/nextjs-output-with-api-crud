@@ -34,12 +34,17 @@ export const fetchTodoApi = async (id: number) => {
 
 /**
  * Todo新規登録のAPI接続処理
- * @param {string} title
- * @param {string} content
+ * @param title
+ * @param content
+ * @returns
  */
 export const createTodoApi = async (title: string, content: string) => {
   try {
-    await globalAxios.post('/todo', { title: title, content: content });
+    const { data }: AxiosResponse<TodoType> = await globalAxios.post('/todo', {
+      title,
+      content,
+    });
+    return data;
   } catch (err) {
     if (isAxiosError(err)) {
       return err.code;
@@ -55,8 +60,11 @@ export const createTodoApi = async (title: string, content: string) => {
  */
 export const updateTodoApi = async (id: number, title: string, content: string) => {
   try {
-    console.log(id, title, content);
-    await globalAxios.put(`/todo/${id}`, { title: title, content: content });
+    const { data }: AxiosResponse<TodoType> = await globalAxios.put(`/todo/${id}`, {
+      title: title,
+      content: content,
+    });
+    return data;
   } catch (err) {
     if (isAxiosError(err)) {
       return err.code;
@@ -70,7 +78,8 @@ export const updateTodoApi = async (id: number, title: string, content: string) 
  */
 export const deleteTodoApi = async (id: number) => {
   try {
-    await globalAxios.delete(`/todo/${id}`);
+    const { data }: AxiosResponse<TodoType> = await globalAxios.delete(`/todo/${id}`);
+    return data;
   } catch (err) {
     if (isAxiosError(err)) {
       return err.code;
