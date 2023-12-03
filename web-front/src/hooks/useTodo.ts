@@ -7,9 +7,9 @@
 // useCallback は 親コンポーネントから子コンポーネントに渡すコールバック関数をメモ化するのに使う。
 // https://zenn.dev/tsucchiiinoko/articles/8da862593a9980
 import { useState, useCallback, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { fetchTodoListApi } from '@/apis/todoApi';
-import { NAVIGATION_LIST } from '@/constants/navigations';
+// import { useRouter } from 'next/router';
+import { fetchTodoListApi, fetchTodoApi, createTodoApi, updateTodoApi, deleteTodoApi } from '@/apis/todoApi';
+// import { NAVIGATION_LIST } from '@/constants/navigations';
 import { TodoType } from '@/interfaces/Todo';
 
 /**
@@ -17,10 +17,14 @@ import { TodoType } from '@/interfaces/Todo';
  */
 export const useTodo = () => {
   /* todoList */
-  const [originTodoList, setOriginTodoList] = useState<Array<TodoType>>();
-  const router = useRouter();
+  const [originTodoList, setOriginTodoList] = useState<Array<TodoType>>([]);
+  // const router = useRouter();
 
   /* actions */
+
+  /**
+   * Todoリスト 取得処理
+   */
   // useCallback でメモ化。不要な再取得を避ける
   const fetchTodoList = useCallback(async (): Promise<void> => {
     const data = await fetchTodoListApi();
@@ -32,39 +36,26 @@ export const useTodo = () => {
    * @param {string} title
    * @param {string} content
    */
-  const addTodo = useCallback(
-    (title: string, content: string) => {
-      const newId = originTodoList.length + 1;
-      const newTodoList = [
-        ...originTodoList,
-        {
-          id: newId,
-          title: title,
-          content: content,
-        },
-      ];
-      setOriginTodoList(newTodoList);
-      router.push(NAVIGATION_LIST.TOP);
+  const createTodo = useCallback(
+    async (title: string, content: string) => {
+      const createdTodo = await createTodoApi(title, content);
+      return createdTodo;
+      // router.push(NAVIGATION_LIST.TOP);
     },
     [originTodoList]
   );
 
   /**
-   * 更新処理
+   * Todo 更新処理
    * @param {number} id
    * @param {string} title
    * @param {string} content
    */
   const updateTodo = useCallback(
-    (id: number, title: string, content: string) => {
-      const newTodos = originTodoList.map((todo) => {
-        if (todo.id === id) {
-          return { id: id, title: title, content: content };
-        }
-        return todo;
-      });
-      setOriginTodoList(newTodos);
-      router.push(NAVIGATION_LIST.TOP);
+    async (id: number, title: string, content: string) => {
+      const updatedTodo = await updateTodoApi(id, title, content);
+      // router.push(NAVIGATION_LIST.TOP);
+      return updatedTodo;
     },
     [originTodoList]
   );
@@ -73,12 +64,13 @@ export const useTodo = () => {
    * Todo削除処理
    * @param {number} id
    */
-  const deleteTodo = (id: number) => {
-    const newTodos = originTodoList.filter((todo) => {
-      return todo.id !== id;
-    });
-    setOriginTodoList(newTodos);
-  };
+  const deleteTodo = useCallback(
+    async (id: number) => {
+      const deletedTodo = await deleteTodoApi(id);
+      return deletedTodo;
+    },
+    [originTodoList]
+  );
 
   // useEffect でコンポーネントがレンダリング後・再レンダリング後に非同期な処理を行う
   // または、fetchTodoList に変更があった際に実行される(第２引数に依存する)
@@ -87,7 +79,7 @@ export const useTodo = () => {
   }, [fetchTodoList]);
 
   return {
-    addTodo,
+    createTodo,
     originTodoList,
     updateTodo,
     deleteTodo,

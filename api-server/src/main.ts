@@ -2,9 +2,13 @@ import 'reflect-metadata';
 import * as express from 'express';
 import { AppDataSource } from './data-source';
 import todoRoutes from './todo/todo.routes';
+import * as cors from 'cors';
 
 const app = express();
 app.use(express.json());
+
+// CORS エラー対策
+app.use(cors());
 
 AppDataSource.initialize()
   .then(() => {
