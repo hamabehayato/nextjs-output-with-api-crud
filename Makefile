@@ -13,12 +13,9 @@ db-ssh:
 
 
 # DB関連
-## 初期セットアップ
-db-setup:
-	make db-migrate && make db-seed
 # マイグレーション
 db-migrate:
 	docker exec -it nextjs_output_with_crud_backend sh -c "npm run migrate"
-# シーディング
-db-seed:
-	docker exec -it nextjs_output_with_crud_backend sh -c "npm run seed"
+# # シーディング
+# db-seed:
+# 	docker exec -it nextjs_output_with_crud_backend sh -c "npm run seed"

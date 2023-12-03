@@ -39,9 +39,9 @@ docker-compose build
 docker-compose up -d
 注: 初回起動時は node_modules を install しているので時間がかかる バックエンド、フロントエンドが起動できたかどうかは、以下のコマンドでログを確認
 
-#### 3. マイグレーション、シーディング (テーブル、データ作成)
+#### 3. マイグレーション
 
-make db-setup
+make db-migrate
 
 #### 4. ブラウザに表示
 
