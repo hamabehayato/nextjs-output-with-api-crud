@@ -7,9 +7,7 @@
 // useCallback は 親コンポーネントから子コンポーネントに渡すコールバック関数をメモ化するのに使う。
 // https://zenn.dev/tsucchiiinoko/articles/8da862593a9980
 import { useState, useCallback, useEffect } from 'react';
-// import { useRouter } from 'next/router';
-import { fetchTodoListApi, fetchTodoApi, createTodoApi, updateTodoApi, deleteTodoApi } from '@/apis/todoApi';
-// import { NAVIGATION_LIST } from '@/constants/navigations';
+import { fetchTodoListApi, createTodoApi, updateTodoApi, deleteTodoApi } from '@/apis/todoApi';
 import { TodoType } from '@/interfaces/Todo';
 
 /**
@@ -18,7 +16,6 @@ import { TodoType } from '@/interfaces/Todo';
 export const useTodo = () => {
   /* todoList */
   const [originTodoList, setOriginTodoList] = useState<Array<TodoType>>([]);
-  // const router = useRouter();
 
   /* actions */
 
@@ -38,9 +35,17 @@ export const useTodo = () => {
    */
   const createTodo = useCallback(
     async (title: string, content: string) => {
-      const createdTodo = await createTodoApi(title, content);
-      return createdTodo;
-      // router.push(NAVIGATION_LIST.TOP);
+      const todo = await createTodoApi(title, content);
+      // res.data が object 型でなければ、処理をキャンセル
+      if (typeof todo !== 'object') return;
+      setOriginTodoList([
+        ...originTodoList,
+        {
+          id: todo.id,
+          title: todo.title,
+          content: todo.content,
+        },
+      ]);
     },
     [originTodoList]
   );
@@ -53,21 +58,33 @@ export const useTodo = () => {
    */
   const updateTodo = useCallback(
     async (id: number, title: string, content: string) => {
-      const updatedTodo = await updateTodoApi(id, title, content);
-      // router.push(NAVIGATION_LIST.TOP);
-      return updatedTodo;
+      const responseTodo = await updateTodoApi(id, title, content);
+      if (typeof responseTodo !== 'object') return;
+      const updateTodoList = originTodoList.map((todo) => {
+        if (responseTodo.id === todo.id) {
+          return {
+            id: responseTodo.id,
+            title: responseTodo.title,
+            content: responseTodo.content,
+          };
+        }
+
+        return todo;
+      });
+      setOriginTodoList(updateTodoList);
     },
     [originTodoList]
   );
 
   /**
    * Todo削除処理
-   * @param {number} id
+   * @param {number} targetId
    */
   const deleteTodo = useCallback(
-    async (id: number) => {
-      const deletedTodo = await deleteTodoApi(id);
-      return deletedTodo;
+    async (targetId: number) => {
+      const deletedTodo = await deleteTodoApi(targetId);
+      if (typeof deletedTodo !== 'object') return;
+      setOriginTodoList(originTodoList.filter((todo) => todo.id !== deletedTodo.id));
     },
     [originTodoList]
   );
@@ -76,7 +93,7 @@ export const useTodo = () => {
   // または、fetchTodoList に変更があった際に実行される(第２引数に依存する)
   useEffect(() => {
     fetchTodoList();
-  }, [fetchTodoList]);
+  }, [originTodoList]);
 
   return {
     createTodo,
